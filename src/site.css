@@ -1,0 +1,2016 @@
+/* Demo site, in the textmotion.dev register: quiet, typographic, one column. */
+
+:root {
+  --bg: #101012;
+  --ink: #e8e8ea;
+  --muted: #9a9aa2;
+  --hairline: rgba(255, 255, 255, 0.1);
+  --code-bg: #18181c;
+  --accent: #e8e8ea;
+  --pullcord-ink: rgba(255, 255, 255, 0.26);
+  --pullcord-right: clamp(1.5rem, 12vw, 9rem);
+  --doodle: #736e63;
+  color-scheme: dark;
+}
+
+html[data-theme='light'] {
+  --bg: #f4f4f2;
+  --ink: #1a1a1c;
+  --muted: #6e6e76;
+  --hairline: rgba(0, 0, 0, 0.12);
+  --code-bg: #ffffff;
+  --accent: #1a1a1c;
+  --pullcord-ink: rgba(20, 20, 20, 0.28);
+  --doodle: #81818b;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+  /* thin, unobtrusive scrollbars everywhere (page + inner scroll areas) */
+  scrollbar-width: thin;
+  scrollbar-color: gray transparent;
+}
+
+html {
+  background: var(--bg);
+  scrollbar-width: thin;
+  scrollbar-color: gray transparent;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family:
+    'Inter',
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 15px;
+  line-height: 1.65;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: min(100vw, 640px);
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 4.5rem 1.5rem 2.5rem;
+  /* keep effects that spill past their box (hologram particles) from ever
+     adding a horizontal scrollbar; vertical spill still shows */
+  overflow-x: clip;
+}
+
+/* masthead */
+.masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 3rem;
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+a.brand {
+  text-decoration: none;
+  color: inherit;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.version {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+.links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  border-bottom: 1px solid transparent;
+}
+
+.links a:hover {
+  color: var(--ink);
+  border-bottom-color: var(--hairline);
+}
+
+.links a.nav-link.is-active {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+/* per-component "source" link under the tagline */
+.repo-link {
+  margin: -0.6rem 0 1.2rem;
+}
+
+.repo-link a {
+  font-size: 0.82rem;
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 1px solid var(--hairline);
+  padding-bottom: 1px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.repo-link a:hover {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+/* home — the three flagship components, equal billing in one row */
+.home-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.home-card {
+  display: block;
+  padding: 1.1rem 1.2rem 1.2rem;
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 0.2s ease,
+    transform 0.15s ease,
+    background 0.2s ease;
+}
+
+.home-card:hover {
+  border-color: var(--muted);
+  transform: translateY(-2px);
+}
+
+.home-card-kicker {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.home-card h3 {
+  margin: 0.4rem 0 0.5rem;
+  font-size: 1rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.home-card p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+@media (max-width: 600px) {
+  .home-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* iOS-style inset grouped list. Rows sit flush; the container clips the
+   row highlight so first/last rows inherit the corner radius for free. */
+.home-list {
+  --row-pad-x: 19px;
+  --row-pad-y: 13px;
+  list-style: none;
+  margin: 32px 0 0;
+  padding: 0;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--ink) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* full-width hairline divider between rows */
+.home-list li + li {
+  border-top: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+}
+
+.home-list-row {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: var(--row-pad-y) var(--row-pad-x);
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.18s ease;
+}
+
+.home-list-row:hover {
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+
+.home-list-row:active {
+  background: color-mix(in srgb, var(--ink) 10%, transparent);
+}
+
+.home-list-row:focus-visible {
+  outline: none;
+  background: color-mix(in srgb, var(--ink) 7%, transparent);
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.home-list-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+}
+
+.home-list-desc {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  letter-spacing: -0.003em;
+  color: var(--muted);
+}
+
+.tagline {
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--ink);
+  margin: 0 0 1rem;
+}
+
+/* recoverable fallback when a lazy route chunk fails to load (see ChunkErrorBoundary) */
+.lazy-chunk-error {
+  display: grid;
+  place-items: center;
+  gap: 0.9rem;
+  min-height: 46vh;
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--ink);
+}
+.lazy-chunk-error button {
+  font: inherit;
+  font-weight: 600;
+  padding: 0.5rem 1.2rem;
+  border-radius: 10px;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.pull-count {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin: 0 0 3rem;
+}
+
+/* sections */
+section {
+  margin-bottom: 3rem;
+}
+
+h2 {
+  font-size: 1.1rem;
+  font-weight: 680;
+  line-height: 1.3;
+  letter-spacing: -0.014em;
+  color: var(--ink);
+  margin: 0 0 1rem;
+}
+
+p {
+  margin: 0 0 1rem;
+  color: var(--ink);
+}
+
+p code,
+td code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85em;
+  background: var(--code-bg);
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  padding: 0.08em 0.35em;
+}
+
+/* code blocks */
+.code {
+  position: relative;
+  background: var(--code-bg);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  overflow: auto;
+  /* group-break spacing below a bare (intro/install) code block; collapses
+     with a section's 3rem margin when the block is a section's last child */
+  margin-bottom: 2rem;
+}
+
+.code pre {
+  margin: 0;
+  padding: 0.9rem 1rem;
+}
+
+.code code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.code-copy {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.68rem;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--hairline);
+  border-radius: 5px;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+
+.code-copy:hover {
+  color: var(--ink);
+}
+
+/* props table */
+.props {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.props th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  padding: 0 0.75rem 0.5rem 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.props td {
+  padding: 0.55rem 0.75rem 0.55rem 0;
+  border-bottom: 1px solid var(--hairline);
+  vertical-align: top;
+  color: var(--ink);
+}
+
+/* component demo stage */
+.demo-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 2rem 0 1.4rem;
+}
+
+.animaps-demo-stage {
+  align-items: stretch;
+  padding-top: 1.2rem;
+}
+
+/* reserves the map demo's footprint while its (lazy-loaded) chunk arrives, so nothing jumps */
+.animaps-demo-fallback {
+  width: min(1180px, 94vw);
+  margin-left: 50%;
+  transform: translateX(-50%);
+  aspect-ratio: 16 / 10;
+  max-height: 70vh;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(140, 170, 200, 0.14), rgba(120, 150, 185, 0.08));
+}
+
+.page.page-bleed {
+  overflow-x: visible;
+}
+
+.page.page-deskfolio {
+  max-width: none;
+  width: 100vw;
+  min-height: 100vh;
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+.deskfolio-live {
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Fullscreen DeskFolio stage filling the entire viewport */
+.deskfolio-demo-stage {
+  position: relative; /* anchor for stickers / extra components placed on the mat */
+  isolation: isolate;
+  box-sizing: border-box;
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  margin: 0;
+  margin-left: 0;
+  transform: none;
+  border-radius: 0;
+  padding: clamp(1rem, 3vw, 2.5rem);
+  /* the mat: a deep green base with a fine grid and bolder major lines, plus a printed edge band */
+  background-color: #2f6f5b;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.11) 0 1px, transparent 1px 112px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.11) 0 1px, transparent 1px 112px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 28px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 28px),
+    radial-gradient(130% 120% at 50% 0%, #347a64 0%, #285446 70%, #20473b 100%);
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.page-deskfolio > .tagline {
+  width: min(640px, calc(100vw - 3rem));
+  margin: 0 auto 1rem;
+}
+
+/* "how to use" demo — a self-contained LIGHT card sitting on the dark write-up. The premium-iOS feel
+   in the reference lives on a light surface with soft, diffuse shadows, so this whole block becomes
+   that surface (like the component's own pickers). The screenshot is an EMBEDDED media tile — it fills
+   its rounded well flush, held by a hairline + the faintest lift, not popped out on a harsh shadow.
+   Text is the reference's calm two-tone: near-black emphasis on a soft-grey body, generous and airy. */
+.df-howto {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin: 2.25rem 0;
+  padding: 1.35rem;
+  border-radius: 26px;
+  background: #f5f4f1;
+  /* soft, diffuse depth (the iOS signal) + a hair of top sheen so it reads as a real lit surface */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 22px 44px -24px rgba(0, 0, 0, 0.55),
+    0 5px 14px -8px rgba(0, 0, 0, 0.28);
+}
+/* the rounded well the screenshot is set into — fills flush (no white border around the art), with a
+   hairline edge and the gentlest lift so it sits IN the card rather than floating on top of it */
+.df-howto-frame {
+  flex: none;
+  width: clamp(156px, 42%, 240px);
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.05),
+    0 8px 18px -12px rgba(0, 0, 0, 0.22);
+}
+.df-howto-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.df-howto-text {
+  flex: 1;
+  min-width: 0;
+}
+.df-howto-eyebrow {
+  display: block;
+  margin-bottom: 0.55rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9a9aa0;
+}
+.df-howto-text p {
+  margin: 0 0 0.62rem;
+  color: #57565c; /* soft grey body, like the reference */
+  font-size: 0.95rem;
+  line-height: 1.62;
+  letter-spacing: -0.002em; /* a touch of optical tightening for the premium read */
+}
+.df-howto-text p:last-child {
+  margin: 0;
+}
+.df-howto-text strong {
+  font-weight: 600;
+  color: #1c1c1e; /* near-black emphasis — the eye lands on the actions */
+}
+@media (max-width: 620px) {
+  .df-howto {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.1rem;
+    padding: 1.1rem;
+  }
+  .df-howto-frame {
+    width: 100%;
+  }
+}
+
+.page-deskfolio > .tagline.deskfolio-writeup {
+  width: min(640px, calc(100vw - 3rem));
+  margin: clamp(1.35rem, 3vw, 2rem) auto 3rem;
+}
+
+.deskfolio-writeup {
+  /* the how-to desk surface — only a whisper above the page so it blends in rather than popping out
+     as a panel (minimal, like the reference); paired with no hard edge. One knob to retheme. */
+  --df-desk: #1b1814;
+  content-visibility: auto;
+  /* `auto` caches the real rendered height after first reveal, so the 760px estimate only applies once
+     (avoids a scroll-shift in the content below when this section first paints) */
+  contain-intrinsic-size: auto 760px;
+  color: #f5f5f7;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Inter',
+    'Segoe UI',
+    system-ui,
+    sans-serif;
+}
+
+.df-writeup-intro {
+  max-width: 640px;
+  margin: 0 0 1.2rem;
+}
+
+/* iOS branding capsule: a frosted-glass tag, not a flat grey chip. Crisp hairline ring + a hair of
+   top sheen, semibold caps tracked out, and a touch more bottom padding to optically centre the
+   uppercase letters (caps sit high in the line box). */
+/* DeskFolio is the product NAME — so it reads as the title, matching the house convention (home
+   cards: name as the prominent heading, description as the small copy beneath). Not a pill. */
+.df-writeup-name {
+  margin: 0 0 0.42rem;
+  color: #f5f5f7;
+  font-size: clamp(2.25rem, 5vw, 2.85rem);
+  font-weight: 780;
+  line-height: 0.96;
+  letter-spacing: -0.018em;
+}
+
+/* the descriptive headline, now the subtitle under the DeskFolio name */
+.df-writeup-tagline {
+  max-width: 640px;
+  margin: 0;
+  color: rgba(245, 245, 247, 0.86);
+  font-size: clamp(1.2rem, 2.8vw, 1.45rem);
+  font-weight: 600;
+  line-height: 1.24;
+  letter-spacing: -0.008em;
+}
+
+.df-writeup-copy {
+  max-width: 640px;
+  margin: 0.92rem 0 0;
+  color: rgba(245, 245, 247, 0.68);
+  font-size: clamp(1rem, 2.2vw, 1.12rem);
+  line-height: 1.58;
+  letter-spacing: -0.004em;
+}
+
+/* a casual throwaway quip — reads one notch quieter and tucked under the line above */
+.df-writeup-aside {
+  margin-top: 0.45rem;
+  color: rgba(245, 245, 247, 0.5);
+}
+
+.df-writeup-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.58rem 0.72rem;
+  margin: 1.65rem 0 0;
+}
+
+/* minimal tinted pills: a faint wash of the hue + a hairline of it + a bright label, so they read as
+   quiet ghost chips on the dark page rather than loud pastel fills */
+.df-writeup-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.42rem 0.92rem 0.44rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 650;
+  line-height: 1.1;
+  letter-spacing: -0.002em;
+}
+
+.df-writeup-pill--orange {
+  color: #e6a07c;
+  background: rgba(230, 160, 124, 0.09);
+  box-shadow: inset 0 0 0 1px rgba(230, 160, 124, 0.22);
+}
+
+.df-writeup-pill--green {
+  color: #84c890;
+  background: rgba(132, 200, 144, 0.09);
+  box-shadow: inset 0 0 0 1px rgba(132, 200, 144, 0.22);
+}
+
+.df-writeup-pill--blue {
+  color: #9db2f5;
+  background: rgba(157, 178, 245, 0.09);
+  box-shadow: inset 0 0 0 1px rgba(157, 178, 245, 0.22);
+}
+
+.deskfolio-writeup .df-howto {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.9fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(1.35rem, 4vw, 1.8rem);
+  margin: 1.85rem 0 1.05rem;
+  padding: 0;
+  border-radius: 0;
+  color: #f5f5f7;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Flush, concentric iOS media tile: the screenshot fills the rounded well edge-to-edge (the wood
+   bleeds to all four sides), the frame clips the corners, and one tight shadow lifts it off the dark
+   page. No cream tray, no inner radius, no aspect-ratio crop — the image itself defines the height,
+   so the composed shot (menu + bear + plant) is never cropped as the column width drifts. */
+/* iOS-style container: the screenshot sits INSIDE an elevated rounded card with an even inset all
+   around — concentric corners (inner radius = outer 30 − 14px padding = 16), a hairline edge, a hair
+   of top sheen, and one soft shadow lifting the card off the dark page. The shot keeps its own
+   matching radius and a gentle seat shadow, so it reads as a framed screenshot, evenly centred in
+   its surface — not a bled-out crop. */
+/* The how-to art is now vector, not a baked screenshot: the bear sticker (its own SVG) + a static
+   copy of the live edit menu — reusing the real LbResize/LbReplace/LbTrash icons — on a themeable
+   "desk". The desk is a single knob, var(--df-desk), so it follows the theme instead of a fixed wood
+   photo, and the whole scene scales crisply. */
+.deskfolio-writeup .df-howto-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 22px;
+  background: var(--df-desk, #1b1814);
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.deskfolio-writeup .df-howto-text {
+  padding-top: 0.15rem;
+}
+
+.deskfolio-writeup .df-howto-bear {
+  position: absolute;
+  left: 50%;
+  bottom: 3%;
+  width: 55%;
+  height: auto;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.28));
+}
+
+/* a compact static copy of the iOS edit menu, sitting just ABOVE the sticker (not over its face) */
+.deskfolio-writeup .df-howto-menu {
+  position: absolute;
+  left: 50%;
+  top: 6%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  width: 47%;
+  padding: 5px;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.16),
+    0 14px 30px -12px rgba(0, 0, 0, 0.45);
+}
+
+.deskfolio-writeup .df-howto-menu-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.42rem 0.55rem;
+  border-radius: 9px;
+  color: #1c1c1e;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.deskfolio-writeup .df-howto-menu-row--danger {
+  color: #e0533a;
+}
+
+.deskfolio-writeup .df-howto-menu-ico {
+  flex: none;
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+/* the pointer that "long-pressed" the sticker to bloom the menu — white so it reads on the dark desk,
+   sitting just off the bear (white would vanish over the cream sticker) with its tip aimed up-left at
+   it; a soft shadow lifts it off the surface */
+.deskfolio-writeup .df-howto-cursor {
+  position: absolute;
+  right: 12%;
+  bottom: 14%;
+  width: 9%;
+  height: auto;
+  color: #fff;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+  pointer-events: none;
+}
+
+.deskfolio-writeup .df-howto-eyebrow {
+  margin-bottom: 0.72rem;
+  color: rgba(245, 245, 247, 0.5);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.deskfolio-writeup .df-howto-text p {
+  max-width: 36rem;
+  margin: 0 0 1.08rem;
+  color: rgba(245, 245, 247, 0.72);
+  font-size: clamp(1rem, 2vw, 1.1rem);
+  line-height: 1.56;
+  letter-spacing: -0.003em;
+}
+
+.deskfolio-writeup .df-howto-text strong {
+  color: #f5f5f7;
+  font-weight: 720;
+}
+
+.df-reference-strip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-top: 1.4rem;
+}
+
+/* a quiet uppercase label, matching the "HOW TO USE" eyebrow — the pills sit below it */
+.df-reference-title {
+  color: rgba(245, 245, 247, 0.5);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.df-reference-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.df-reference-strip a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  color: rgba(245, 245, 247, 0.74);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: -0.004em;
+  text-decoration: none;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.df-reference-strip a:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.075);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+}
+
+@media (max-width: 620px) {
+  .page-deskfolio > .tagline.deskfolio-writeup {
+    width: min(100% - 2rem, 640px);
+    margin: 1.25rem auto 2.4rem;
+  }
+
+  .df-writeup-name {
+    font-size: 2.18rem;
+    line-height: 1;
+  }
+
+  .df-writeup-tagline {
+    font-size: 1.18rem;
+    line-height: 1.3;
+  }
+
+  .df-writeup-copy {
+    font-size: 1rem;
+    line-height: 1.56;
+  }
+
+  .deskfolio-writeup .df-howto {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin-top: 1.6rem;
+  }
+
+  .deskfolio-writeup .df-howto-text p {
+    font-size: 0.98rem;
+    line-height: 1.58;
+  }
+}
+
+
+
+.page-deskfolio .footer {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  /* phones + small tablets: the desk canvas goes full-bleed and fills the screen (no dead space), laid
+     out as a column — controls on top, the one-page book filling the rest. (Breakpoint raised from 560
+     to 760 so narrow/tablet windows get the clean one-page reader instead of a cramped desktop desk.) */
+  .page.page-deskfolio {
+    padding: 0;
+  }
+  .deskfolio-demo-stage {
+    width: 100%; /* full-bleed via the (max-width:none) page, but NOT 100vw — that ignores a scrollbar
+                    and would push the centred book off to one side */
+    min-height: 100svh;
+    margin-left: 0;
+    transform: none; /* one-page book sizes itself via CSS; no stage scaling on mobile */
+    border-radius: 0;
+    padding: 12px 12px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  /* the book wrapper fills the space below the controls and centres the book in it — but with a bottom
+     band reserved (~20vh) for the desk items (iPod + stickers) that sit along the bottom. So the book
+     optically centres in the OPEN space between the controls and the desk clutter, not the raw canvas,
+     and because the reserve is in vh it holds the same on every device. */
+  .df-book-bloom--mobile {
+    flex: 1 1 auto;
+    align-self: stretch;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 26vh;
+    min-height: 0;
+  }
+}
+
+.animaps-demo-stage .animaps {
+  width: min(1180px, 94vw);
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+@media (max-width: 560px) {
+  .animaps-demo-stage .animaps {
+    width: 100vw;
+    border-radius: 0;
+  }
+}
+
+.demo-reset {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  background: var(--code-bg);
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+
+/* pill switcher for the captcha character pack (Cuties / Pokémon) */
+/* ── iOS segmented control ──────────────────────────────────────────────
+   Filled track + a single thumb that springs to the active segment. */
+.seg {
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  padding: 3px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ink) 7%, transparent);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.seg-thumb {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 0;
+  width: 0;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--ink) 16%, transparent);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.35),
+    inset 0 0 0 0.5px color-mix(in srgb, var(--ink) 22%, transparent);
+  pointer-events: none;
+  will-change: transform, width;
+}
+
+/* iOS ease — only armed after the first (instant) placement */
+.seg-thumb--anim {
+  transition:
+    transform 0.34s cubic-bezier(0.32, 0.72, 0, 1),
+    width 0.34s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.seg-item {
+  position: relative;
+  z-index: 1;
+  border: 0;
+  background: transparent;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  line-height: 1;
+  color: var(--muted);
+  padding: 6px 14px;
+  border-radius: 9px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.2s ease, transform 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.seg-item[data-active='true'] {
+  color: var(--ink);
+}
+
+.seg-item:not([data-active='true']):hover {
+  color: color-mix(in srgb, var(--ink) 70%, var(--muted));
+}
+
+.seg-item:active {
+  transform: scale(0.94);
+}
+
+/* ── iOS switch ─────────────────────────────────────────────────────────
+   Monochrome: off = soft fill + light knob, on = ink fill + dark knob. */
+.ui-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.2s ease;
+}
+
+.ui-switch[aria-checked='true'] {
+  color: var(--ink);
+}
+
+.ui-switch-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ui-switch-label svg {
+  width: 14px;
+  height: 14px;
+}
+
+.ui-switch-track {
+  position: relative;
+  flex: none;
+  width: 38px;
+  height: 23px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 14%, transparent);
+  transition: background 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.ui-switch[aria-checked='true'] .ui-switch-track {
+  background: var(--ink);
+}
+
+.ui-switch-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: var(--ink);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.45), 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition:
+    transform 0.3s cubic-bezier(0.32, 0.72, 0, 1),
+    background 0.3s ease;
+}
+
+.ui-switch[aria-checked='true'] .ui-switch-knob {
+  transform: translateX(15px);
+  background: var(--bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seg-thumb--anim,
+  .ui-switch-track,
+  .ui-switch-knob {
+    transition: none;
+  }
+}
+
+/* light theme: selected surfaces are raised WHITE (not a darker gray tint) */
+html[data-theme='light'] .seg-thumb {
+  background: #fff;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.14),
+    0 0 0 0.5px rgba(0, 0, 0, 0.04);
+}
+
+html[data-theme='light'] .ui-switch-knob,
+html[data-theme='light'] .ui-switch[aria-checked='true'] .ui-switch-knob {
+  background: #fff;
+}
+
+html[data-theme='light'] .bunny-character-option.is-active {
+  background: #fff;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.14),
+    0 0 0 0.5px rgba(0, 0, 0, 0.04);
+}
+
+.demo-reset:hover {
+  color: var(--ink);
+}
+
+/* crumple sound on/off toggle — default off; lights up when on */
+/* ClawCaptcha keeps its ivory surface in both site themes; on the dark page
+   it floats like a physical object (the reference look). */
+
+/* Fur demo — the hero folder, swatch row, and the litter grid */
+.fur-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+  /* the fringe and pet motion poke past the hero's box; give them air */
+  padding: 2.4rem 0 1rem;
+}
+
+.fur-hero {
+  /* small on purpose — the strand length is clamped in absolute px, so a
+     compact folder wears the coat at a flattering scale (the big version
+     reads stringy) */
+  width: min(220px, 62%);
+  aspect-ratio: 29 / 24;
+}
+
+.fur-hero-heart {
+  width: min(220px, 60%);
+  aspect-ratio: 1 / 1;
+}
+
+.fur-hero-paw {
+  /* the orange paw bbox is ~500×945 — tall and narrow */
+  width: min(170px, 48%);
+  aspect-ratio: 500 / 945;
+}
+
+.fur-hero-text {
+  /* wide and short so the lettering fills the box */
+  width: min(420px, 92%);
+  aspect-ratio: 10 / 3;
+}
+
+.fur-text-input {
+  width: min(260px, 80%);
+  text-align: center;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--ink);
+  background: var(--code-bg);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  padding: 7px 12px;
+  outline: none;
+}
+.fur-text-input:focus {
+  border-color: var(--ink);
+}
+
+
+.fur-pet-hint {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.fur-swatches {
+  display: flex;
+  gap: 0.7rem;
+}
+
+.fur-swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+  transition: transform 160ms ease, border-color 160ms ease;
+}
+
+.fur-swatch:hover {
+  transform: scale(1.12);
+}
+
+.fur-swatch.is-active {
+  border-color: var(--ink);
+}
+
+.fur-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.6rem;
+  padding: 1.4rem 0.4rem 1rem;
+}
+
+.fur-mini {
+  aspect-ratio: 29 / 24;
+}
+
+@media (max-width: 560px) {
+  .fur-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.8rem 1.2rem;
+  }
+}
+
+/* Bunny demo — the live modal switcher and four-mood gallery */
+/* momentary preview buttons — same track look as .seg, but the active fill
+   fades in/out (no sliding thumb: more than one can light up while held) */
+.bunny-character-toggle {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 3px;
+  gap: 3px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ink) 7%, transparent);
+}
+
+.bunny-character-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 72px;
+  min-height: 34px; /* comfortable touch target on mobile */
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  border-radius: 9px;
+  padding: 6px 14px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, transform 0.12s ease;
+}
+
+.bunny-character-option:not(.is-active):hover {
+  color: color-mix(in srgb, var(--ink) 70%, var(--muted));
+}
+
+.bunny-character-option.is-active {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 13%, transparent);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.35),
+    inset 0 0 0 0.5px color-mix(in srgb, var(--ink) 20%, transparent);
+}
+
+.bunny-character-option:active {
+  transform: scale(0.94);
+}
+
+/* live-demo colour picker — clean, simple colour dots that reskin the modal blob */
+.blob-skin-swatches {
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.blob-skin-swatch {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  /* simple + premium: one fine inner ring for definition + a soft ground shadow — no candy gloss */
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.22),
+    0 1px 4px rgba(0, 0, 0, 0.26);
+  transition:
+    transform 150ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 160ms ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* generous invisible hit area (~46px) so the dots are easy to tap on mobile */
+.blob-skin-swatch::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+}
+
+.blob-skin-swatch:hover,
+.blob-skin-swatch:focus-visible {
+  transform: scale(1.12);
+  outline: none;
+}
+
+.blob-skin-swatch.is-active {
+  transform: scale(1.06);
+  /* clean iOS-style selection: a gap of page colour, then a crisp ring */
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.22),
+    0 0 0 2px var(--bg),
+    0 0 0 4px var(--ink);
+}
+
+/* bubble + blob stacked; the blob is pulled up under the caret so the cloud
+   reads as coming from its head (the SVG has ~28px of clear space up top). */
+.blob-speak {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  margin-top: 2px;
+}
+
+.bunny-modal-blob {
+  display: block;
+  width: min(200px, 76%);
+  height: auto;
+  /* head pulled up so the tooltip tail points right at it (small optical gap), and the
+     bottom tucked so there's a clean gap down to the title */
+  margin: -20px auto -2px;
+  /* clickable so the boop (poke-to-squash) fires in the modal too */
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  /* glow follows the skin in dark; a soft neutral shadow in light (--jelly-shadow) so it grounds
+     the blob cleanly on white instead of casting a muddy purple halo */
+  filter: drop-shadow(0 10px 18px color-mix(in srgb, var(--jelly-shadow, var(--jelly-outline, #9754db)) 16%, transparent));
+}
+
+.jelly-blob-demo {
+  display: grid;
+  grid-template-columns: minmax(190px, 240px) 1fr;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.2rem;
+}
+
+.jelly-blob-stage {
+  display: grid;
+  place-items: center;
+  min-height: 180px;
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 50% 72%, rgba(164, 95, 229, 0.22), transparent 42%),
+    color-mix(in srgb, var(--code-bg), transparent 18%);
+  overflow: visible;
+}
+
+.jelly-blob-demo-mascot {
+  width: min(220px, 92%);
+  height: auto;
+  filter: drop-shadow(0 10px 16px rgba(151, 84, 219, 0.14));
+}
+
+.jelly-mood-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.jelly-mood-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  min-height: 58px;
+  padding: 0.65rem 0.7rem;
+  text-align: left;
+  color: var(--muted);
+  background: var(--code-bg);
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    transform 120ms ease;
+}
+
+.jelly-mood-card:hover,
+.jelly-mood-card:focus-visible {
+  color: var(--ink);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.jelly-mood-card.is-active {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+.jelly-mood-card strong {
+  font-size: 0.83rem;
+  font-weight: 600;
+}
+
+.jelly-mood-card span {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.66rem;
+}
+
+.bunny-gallery {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+  margin-top: 1.2rem;
+}
+
+.bunny-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 1rem 0.4rem 0.8rem;
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+}
+
+.bunny-cell figcaption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  line-height: 1.3;
+}
+
+.bunny-cell figcaption strong {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.bunny-cell figcaption span {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.66rem;
+  color: var(--muted);
+}
+
+/* form companion — blob beside a live form; it leans toward your email and turns away for the
+   password. All blob movement is spring-driven in JS (motion/react), so the CSS just sets up a
+   roomy stage for it to roam in — no keyframes or transitions here to fight the springs. */
+.form-companion {
+  display: grid;
+  grid-template-columns: minmax(220px, 300px) 1fr;
+  gap: 2.2rem;
+  align-items: center;
+  margin-top: 1.2rem;
+  padding: 2rem 2.2rem;
+  border: 1px solid var(--hairline);
+  border-radius: 18px;
+  background: var(--code-bg);
+}
+
+/* the blob's playground: centred, with real height + slack on every side so it can glide, lean and
+   recoil without clipping at the edges or shoving the form across. overflow stays visible so the
+   drop-shadow and any overshoot read cleanly. */
+.form-companion-stage {
+  display: grid;
+  place-items: center;
+  min-height: 260px;
+  padding: 0.5rem;
+  overflow: visible;
+}
+
+.form-companion-mascot-wrap {
+  width: min(214px, 100%);
+  /* pivot at the blob's feet (~84% down the SVG viewBox), so leaning rotates over a planted base
+     and the squash/stretch compresses toward the ground — character hinging, not a floating sprite */
+  transform-origin: 50% 84%;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.form-companion-mascot {
+  display: block;
+  width: 100%;
+  height: auto;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  filter: drop-shadow(0 12px 20px color-mix(in srgb, var(--jelly-shadow, var(--jelly-outline, #9754db)) 16%, transparent));
+}
+
+.form-companion-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.form-companion-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.32rem;
+}
+
+.form-companion-field span {
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--muted);
+}
+
+.form-companion-field input {
+  font: inherit;
+  font-size: 0.95rem;
+  padding: 0.62rem 0.85rem;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--hairline);
+  border-radius: 11px;
+  outline: none;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.form-companion-field input::placeholder {
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+.form-companion-field input:focus {
+  border-color: color-mix(in srgb, var(--jelly-outline, #8d52de), transparent 32%);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--jelly-outline, #8d52de), transparent 82%);
+}
+
+@media (max-width: 560px) {
+  .form-companion {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    padding: 1.5rem 1.3rem;
+  }
+  /* stacked above the form: shrink the stage + blob so it sits right on top of the fields it watches,
+     instead of floating in a tall empty box with no clear link to the inputs */
+  .form-companion-stage {
+    min-height: 132px;
+    padding: 0;
+  }
+  .form-companion-mascot-wrap {
+    width: min(128px, 44%);
+  }
+}
+
+/* reskin gallery — the same mascot per palette; glow follows each cell's skin */
+.blob-skin-mascot {
+  width: min(132px, 100%);
+  height: auto;
+  filter: drop-shadow(0 12px 16px color-mix(in srgb, var(--jelly-shadow, var(--jelly-outline, #9754db)) 24%, transparent));
+}
+
+@media (max-width: 560px) {
+  .jelly-blob-demo {
+    grid-template-columns: 1fr;
+  }
+
+  .bunny-gallery {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+  }
+}
+
+/* footer — pinned to the bottom of the column so it never floats mid-screen */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--hairline);
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.footer-right {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.footer a {
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 1px solid var(--hairline);
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.footer a:hover {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+.footer-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+}
+
+.footer-icon svg {
+  display: block;
+}
+
+/* each social icon picks up its own brand tint on hover
+   (a.footer-x beats the generic .footer a:hover so the colour wins) */
+.footer a.footer-x:hover {
+  color: #1d9bf0;
+  border-bottom-color: #1d9bf0;
+}
+
+.footer a.footer-dribbble:hover {
+  color: #ea4c89;
+  border-bottom-color: #ea4c89;
+}
+
+/* handwritten aside under the element cards */
+.coming-soon {
+  margin: 1.1rem 0 0;
+  text-align: left;
+  font-family: 'Caveat', cursive;
+  font-size: 1.4rem;
+  color: var(--doodle);
+  transform: rotate(-2deg);
+  transform-origin: left center;
+}
+
+/* doodle hint pointing at the cord, demo-site chrome (not part of the library) */
+.cord-hint {
+  position: fixed;
+  top: calc(var(--pullcord-top, 0px) + 172px);
+  right: calc(var(--pullcord-right, 7rem) + 52px);
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 4;
+  color: var(--doodle);
+  animation: hint-in 0.5s ease 1.8s both;
+}
+
+@keyframes hint-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.cord-hint-text {
+  font-family: 'Caveat', 'Segoe Script', 'Bradley Hand', cursive;
+  font-weight: 600;
+  font-size: 21px;
+  line-height: 0.95;
+  text-align: right;
+}
+
+.cord-hint-arrow {
+  flex: none;
+  transform: rotate(16deg);
+  transform-origin: center;
+}
+
+/* ── pullcord playground: iOS-style sliders driving the live cord ────────── */
+.knobs {
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 1.2rem;
+}
+
+.knob {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.knob-hint {
+  padding-left: 12px;
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.01em;
+}
+
+.knob-name {
+  flex: none;
+  width: 6.4rem;
+  font-size: 0.84rem;
+  color: var(--ink);
+}
+
+.knob-name em {
+  display: block;
+  font-style: normal;
+  font-size: 0.68rem;
+  color: var(--muted);
+  letter-spacing: 0.01em;
+}
+
+.knob output {
+  flex: none;
+  width: 3.2rem;
+  text-align: right;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+/* the slider itself: hairline track with a filled left side, big white thumb */
+.knob input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1;
+  height: 28px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.knob input[type='range']::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(to right, #0a84ff var(--fill, 50%), var(--hairline) var(--fill, 50%));
+}
+
+.knob input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  margin-top: -9px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.06),
+    0 0.5px 2px rgba(0, 0, 0, 0.25),
+    0 3px 7px rgba(0, 0, 0, 0.12);
+}
+
+.knob input[type='range']::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--hairline);
+}
+
+.knob input[type='range']::-moz-range-progress {
+  height: 4px;
+  border-radius: 2px;
+  background: #0a84ff;
+}
+
+.knob input[type='range']::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.06),
+    0 0.5px 2px rgba(0, 0, 0, 0.25),
+    0 3px 7px rgba(0, 0, 0, 0.12);
+}
+
+.knob input[type='range']:focus-visible {
+  outline: 2px solid #0a84ff;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* Map-style elastic ruler slider (DialSlider) — monochrome recessed track, hash
+   marks, thin bar handle; the track rubber-bands on drag-past-end (in the JS). */
+.knob .dial-slider {
+  width: 100%;
+  height: 34px;
+}
+.dial-slider {
+  position: relative;
+  height: 30px;
+  cursor: pointer;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  outline: none;
+}
+.dial-slider:focus-visible {
+  outline: 2px solid #0a84ff;
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+.dial-track {
+  position: relative;
+  height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.09);
+}
+.dial-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(255, 255, 255, 0.12);
+}
+.dial-slider.is-active .dial-fill {
+  background: rgba(255, 255, 255, 0.17);
+}
+.dial-ticks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.dial-ticks span {
+  position: absolute;
+  top: 50%;
+  width: 1px;
+  height: 8px;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.22);
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+.dial-handle {
+  position: absolute;
+  top: 50%;
+  margin-top: -10px;
+  margin-left: -1.5px;
+  width: 3px;
+  height: 20px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+/* DialKit behaviour: ticks + handle stay hidden until you hover or drag. */
+.dial-slider:hover .dial-ticks span,
+.dial-slider.is-active .dial-ticks span,
+.dial-slider:hover .dial-handle,
+.dial-slider.is-active .dial-handle {
+  opacity: 1;
+}
+/* Label + value live INSIDE the track (always visible), like the reference. */
+.dial-label,
+.dial-value {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  pointer-events: none;
+  font-size: 13px;
+  line-height: 1;
+}
+.dial-label {
+  left: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+}
+.dial-value {
+  right: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* Light theme — invert the monochrome so the dial stays legible. */
+html[data-theme='light'] .dial-track {
+  background: rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+html[data-theme='light'] .dial-fill {
+  background: rgba(0, 0, 0, 0.13);
+}
+html[data-theme='light'] .dial-slider.is-active .dial-fill {
+  background: rgba(0, 0, 0, 0.18);
+}
+html[data-theme='light'] .dial-ticks span {
+  background: rgba(0, 0, 0, 0.22);
+}
+html[data-theme='light'] .dial-handle {
+  background: #1b1b1d;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+html[data-theme='light'] .dial-label {
+  color: rgba(0, 0, 0, 0.85);
+}
+html[data-theme='light'] .dial-value {
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.knob-reset {
+  justify-self: start;
+  margin-top: 0.2rem;
+  padding: 0.42rem 0.9rem;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.knob-reset:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+/* Hologram demo — the foil card, a tilt hint, and a thumbnail Pokémon picker */
+.holo-stage {
+  /* the card's drop-shadow + border glow spill well past its box, and tilting
+     swings its corners out — give the whole thing breathing room */
+  padding: 2.6rem 0 1.4rem;
+  gap: 1.3rem;
+}
+
+.holo-hint {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.holo-picker {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.55rem;
+  max-width: 380px;
+}
+
+.holo-chip {
+  /* mini card-shaped thumbnails (the TCG 63:88 aspect) */
+  width: 44px;
+  height: 61px;
+  padding: 0;
+  overflow: hidden;
+  background: var(--code-bg);
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.holo-chip img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* dim the unselected thumbs so the active one pops */
+  filter: saturate(0.9) brightness(0.78);
+  transition: filter 160ms ease;
+}
+
+.holo-chip:hover {
+  border-color: var(--muted);
+  transform: translateY(-2px);
+}
+
+.holo-chip:hover img {
+  filter: none;
+}
+
+.holo-chip.is-active {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px var(--ink), 0 8px 18px -8px rgba(0, 0, 0, 0.5);
+}
+
+.holo-chip.is-active img {
+  filter: none;
+}
+
+/* the holo foil dials sit right under the card, a touch narrower than the page */
+.holo-knobs {
+  width: min(420px, 100%);
+  margin-top: 0.6rem;
+}
+
+@media (max-width: 760px) {
+  .cord-hint {
+    display: none;
+  }
+  .page {
+    padding-top: 3.5rem;
+  }
+}
+
+/* let the masthead stack and the links wrap on narrow phones so nothing runs off the side */
+@media (max-width: 600px) {
+  .masthead {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+  .links {
+    flex-wrap: wrap;
+    gap: 0.55rem 1rem;
+  }
+  .page > .tagline {
+    width: calc(100vw - 3rem);
+    max-width: calc(100vw - 3rem);
+  }
+  .page.page-bleed {
+    overflow-x: clip;
+  }
+}
+
+/* the captcha card draws in a fixed 440px coordinate space (the machine's
+   physics runs in px), so on narrow phones we scale the WHOLE card down
+   uniformly rather than letting the glass clip the claw's travel */
+@media (max-width: 488px) {
+  .demo-stage .clawcap {
+    zoom: 0.86;
+  }
+}
+
+@media (max-width: 425px) {
+  .demo-stage .clawcap {
+    zoom: 0.74;
+  }
+}
+
+@media (max-width: 370px) {
+  .demo-stage .clawcap {
+    zoom: 0.6; /* still fits a 320px phone incl. page padding */
+  }
+}
+
+
