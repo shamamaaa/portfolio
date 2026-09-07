@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Shamama Guliyeva's interactive portfolio — a desk scene with a flip-through book, draggable stickers, and self-drawing scribble underlines. Based on the open-source DeskFolio template by mortspace (https://github.com/mortspace/Deskfolio).",
+  "description": "Shamama Guliyeva's interactive portfolio: a desk scene with a flip-through book, draggable stickers, and self-drawing scribble underlines.",
   "license": "MIT",
   "scripts": {
     "dev": "vite",
