@@ -708,6 +708,52 @@
 /* push pill to page foot */
 .df-label--push { margin-top: 0.35rem; }
 
+/* phones: the one-page reader gives each page less height than desktop, so
+   tighten the vertical rhythm here to keep longer content (bio + CV button,
+   multi-line project descriptions) from being clipped by the page's own
+   overflow:hidden ancestor. */
+@media (max-width: 760px) {
+  .df-page {
+    gap: 0.38rem;
+  }
+  .df-hello {
+    font-size: clamp(1.5rem, 13cqw, 3rem);
+  }
+  .df-edit--body {
+    font-size: 0.9rem;
+    line-height: 1.42;
+  }
+  .df-avatar {
+    width: 50px;
+    height: 50px;
+  }
+  .df-name {
+    font-size: 1.55rem;
+  }
+  .df-role {
+    margin-top: 0.1rem;
+  }
+  .df-card-title {
+    font-size: 1.2rem;
+    margin-bottom: 0.15rem;
+  }
+  .df-date,
+  .df-cv-btn {
+    padding-top: 0.16rem;
+    padding-bottom: 0.16rem;
+  }
+  .df-proj-desc {
+    font-size: 0.88rem;
+    line-height: 1.42;
+  }
+  .df-proj {
+    gap: 0.25rem;
+  }
+  .df-xp {
+    gap: 0.4rem;
+  }
+}
+
 /* skill / interest chips */
 .df-tags {
   list-style: none;
